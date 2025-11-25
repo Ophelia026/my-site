@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>睡前故事创造师</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            padding: 30px 20px;
+            text-align: center;
+            color: #5a3d5c;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #5a3d5c;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #5a3d5c;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #6a11cb;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .story-container {
+            background-color: #f9f7fe;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            line-height: 1.6;
+            border-left: 5px solid #6a11cb;
+            display: none;
+        }
+        
+        .story-title {
+            color: #5a3d5c;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .story-content {
+            white-space: pre-line;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .saved-stories {
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .story-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff9a9e;
+        }
+        
+        .story-item h3 {
+            color: #5a3d5c;
+            margin-bottom: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #6a11cb;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9rem;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>睡前故事创造师</h1>
+            <p class="subtitle">为您的孩子创造独一无二的睡前故事</p>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <h2>创建您的专属故事</h2>
+                <div class="form-group">
+                    <label for="childName">孩子的名字</label>
+                    <input type="text" id="childName" placeholder="例如：小明">
+                </div>
+                
+                <div class="form-group">
+                    <label for="childAge">孩子的年龄</label>
+                    <input type="number" id="childAge" min="1" max="12" value="5">
+                </div>
+                
+                <div class="form-group">
+                    <label for="storyTheme">故事主题</label>
+                    <select id="storyTheme">
+                        <option value="adventure">冒险故事</option>
+                        <option value="animal">动物世界</option>
+                        <option value="fantasy">奇幻魔法</option>
+                        <option value="friendship">友谊与分享</option>
+                        <option value="bravery">勇敢与成长</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="character">主要角色</label>
+                    <input type="text" id="character" placeholder="例如：小兔子、魔法龙">
+                </div>
+                
+                <div class="form-group">
+                    <label for="specialRequest">特别要求（可选）</label>
+                    <textarea id="specialRequest" rows="3" placeholder="例如：故事要包含学习数字的内容"></textarea>
+                </div>
+                
+                <button id="generateBtn" class="btn">生成故事</button>
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>正在创作您的专属故事...</p>
+            </div>
+            
+            <div class="story-container" id="storyContainer">
+                <h2 class="story-title" id="storyTitle"></h2>
+                <div class="story-content" id="storyContent"></div>
+                
+                <div class="actions">
+                    <button id="readAloudBtn" class="btn">朗读故事</button>
+                    <button id="saveStoryBtn" class="btn">保存故事</button>
+                    <button id="newStoryBtn" class="btn">创作新故事</button>
+                </div>
+            </div>
+            
+            <div class="section saved-stories">
+                <h2>已保存的故事</h2>
+                <div id="savedStoriesList">
+                    <p id="noStoriesMessage">您还没有保存任何故事</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>睡前故事创造师 &copy; 2023 - 让每个夜晚都充满想象</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const generateBtn = document.getElementById('generateBtn');
+            const readAloudBtn = document.getElementById('readAloudBtn');
+            const saveStoryBtn = document.getElementById('saveStoryBtn');
+            const newStoryBtn = document.getElementById('newStoryBtn');
+            const storyContainer = document.getElementById('storyContainer');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const savedStoriesList = document.getElementById('savedStoriesList');
+            const noStoriesMessage = document.getElementById('noStoriesMessage');
+            
+            // 从本地存储加载已保存的故事
+            let savedStories = JSON.parse(localStorage.getItem('savedStories')) || [];
+            renderSavedStories();
+            
+            // 生成故事按钮事件
+            generateBtn.addEventListener('click', generateStory);
+            
+            // 朗读故事按钮事件
+            readAloudBtn.addEventListener('click', readAloud);
+            
+            // 保存故事按钮事件
+            saveStoryBtn.addEventListener('click', saveStory);
+            
+            // 新故事按钮事件
+            newStoryBtn.addEventListener('click', resetForm);
+            
+            // 生成故事函数
+            function generateStory() {
+                // 获取表单数据
+                const childName = document.getElementById('childName').value || '小朋友';
+                const childAge = document.getElementById('childAge').value;
+                const storyTheme = document.getElementById('storyTheme').value;
+                const character = document.getElementById('character').value || '小动物';
+                const specialRequest = document.getElementById('specialRequest').value;
+                
+                // 显示加载指示器
+                loadingIndicator.style.display = 'block';
+                storyContainer.style.display = 'none';
+                
+                // 模拟API调用延迟
+                setTimeout(() => {
+                    // 生成故事
+                    const story = createStory(childName, childAge, storyTheme, character, specialRequest);
+                    
+                    // 显示故事
+                    document.getElementById('storyTitle').textContent = story.title;
+                    document.getElementById('storyContent').textContent = story.content;
+                    
+                    // 隐藏加载指示器，显示故事
+                    loadingIndicator.style.display = 'none';
+                    storyContainer.style.display = 'block';
+                }, 1500);
+            }
+            
+            // 创建故事函数
+            function createStory(childName, childAge, theme, character, specialRequest) {
+                const themes = {
+                    adventure: {
+                        title: `${childName}的奇妙冒险`,
+                        templates: [
+                            `有一天，${childName}在森林里发现了一个神秘的地图。地图上标记着一个隐藏的宝藏！${childName}决定和${character}一起踏上寻宝之旅。`,
+                            `在旅途中，他们遇到了会说话的树木和友好的小精灵。小精灵告诉他们："要找到宝藏，你们需要解开三个谜题。"`,
+                            `第一个谜题是关于分享的。${childName}把自己带的饼干分给了饥饿的小鸟，小鸟高兴地唱起歌来。`,
+                            `第二个谜题是关于勇气的。${childName}帮助一只被困在荆棘丛中的小鹿脱困，小鹿感激地带领他们穿过密林。`,
+                            `第三个谜题是关于智慧的。${character}想出了一个聪明的办法，搭建了一座桥越过湍急的河流。`,
+                            `最终，他们找到了宝藏！但宝藏不是金银珠宝，而是一本神奇的书籍，书中记录着世界上所有最美好的故事。`,
+                            `${childName}意识到，真正的宝藏是旅途中结交的朋友和学到的宝贵经验。他们开心地回家了，准备与家人分享这个奇妙的故事。`
+                        ]
+                    },
+                    animal: {
+                        title: `${childName}和${character}的友谊`,
+                        templates: [
+                            `在美丽的森林里，住着一只可爱的${character}。每天，${character}都会在湖边玩耍，但它总觉得有点孤单。`,
+                            `有一天，${childName}和家人来到森林野餐。${childName}发现了正在玩耍的${character}，他们立刻成为了好朋友。`,
+                            `${childName}和${character}一起探索森林，发现了许多有趣的事情：会跳舞的蘑菇、会唱歌的小溪，还有在月光下闪闪发光的萤火虫。`,
+                            `他们帮助迷路的小松鼠找到回家的路，还帮鸟妈妈修复被风吹坏的鸟巢。`,
+                            `当太阳开始下山时，${childName}不得不回家了。${character}依依不舍地说："明天你还会来吗？"`,
+                            `${childName}点点头："当然会！你是我最好的朋友！"`,
+                            `从那天起，${childName}每天都会来到森林和${character}一起玩耍。他们的友谊让整个森林都充满了欢乐。`
+                        ]
+                    },
+                    fantasy: {
+                        title: `${childName}的魔法梦境`,
+                        templates: [
+                            `一天晚上，${childName}在床上翻来覆去睡不着。突然，窗外飞来一只闪闪发光的魔法精灵。`,
+                            `"你好，${childName}！"精灵说，"我来自梦境王国，想邀请你去一个神奇的地方。"`,
+                            `精灵挥动魔法棒，${childName}的卧室立刻变成了一个充满魔法的世界！这里有会飞的茶杯、会跳舞的枕头，还有用棉花糖做的云朵。`,
+                            `在这个魔法世界里，${childName}遇到了${character}。他们一起坐上彩虹滑梯，滑向了糖果城堡。`,
+                            `城堡里住着一位慈祥的梦境女王。女王说："只有拥有纯净心灵的孩子才能来到梦境王国。"`,
+                            `女王送给${childName}一个神奇的梦境宝石："这颗宝石会保护你，让你每晚都有甜美的梦。"`,
+                            `当${childName}醒来时，发现自己还在床上，但手中握着一颗闪闪发光的宝石。从那天起，${childName}每晚都睡得特别香甜。`
+                        ]
+                    },
+                    friendship: {
+                        title: `${childName}学会分享`,
+                        templates: [
+                            `${childName}有一个最喜欢的玩具，那是一只会发光的小熊。${childName}非常喜欢这只小熊，从不让别人碰它。`,
+                            `有一天，邻居家的小妹妹来玩。她看到发光小熊，眼睛立刻亮了起来。"我可以摸摸它吗？"小妹妹小声问。`,
+                            `${childName}犹豫了一下，但还是摇了摇头："不行，这是我的宝贝。"小妹妹失望地低下了头。`,
+                            `那天晚上，${childName}做了一个梦。梦里，玩具们都在哭泣："我们很孤独，没有人跟我们玩。"`,
+                            `第二天，${childName}想起了那个梦。当小妹妹再次来访时，${childName}主动拿出小熊："我们一起玩吧！"`,
+                            `看到小妹妹开心的笑容，${childName}心里也暖暖的。他们一起给小熊编故事，玩得特别开心。`,
+                            `${childName}发现，分享不仅能带给别人快乐，也能让自己更快乐。从那天起，${childName}学会了与朋友们分享。`
+                        ]
+                    },
+                    bravery: {
+                        title: `${childName}的勇敢之旅`,
+                        templates: [
+                            `${childName}有点害怕黑暗，每晚都需要开着小夜灯才能入睡。`,
+                            `一天，${childName}收到了一封神秘的信。信上写着："勇敢的小朋友，我们需要你的帮助！"`,
+                            `信是从星光王国寄来的。星光王国的守护精灵${character}告诉${childName}，王国的星光正在变暗，需要勇敢的孩子帮助重新点亮星光。`,
+                            `虽然有点害怕，但${childName}还是决定帮助${character}。他们一起踏上了前往星光王国的旅程。`,
+                            `在路上，他们遇到了黑暗洞穴。${character}说："我们必须穿过这个洞穴，才能到达星光之山。"`,
+                            `${childName}深吸一口气，牵着${character}的手走进了洞穴。起初很害怕，但渐渐地，${childName}发现黑暗并没有想象中那么可怕。`,
+                            `当他们走出洞穴时，看到了美丽的星光之山。${childName}按照指示，唱起了勇敢之歌，星光立刻变得明亮耀眼。`,
+                            `回到家后，${childName}发现自己不再害怕黑暗了。因为${childName}知道，真正的勇气不是不害怕，而是即使害怕也要坚持做正确的事。`
+                        ]
+                    }
+                };
+                
+                const selectedTheme = themes[theme] || themes.adventure;
+                let storyContent = '';
+                
+                // 根据年龄调整故事复杂度
+                const isSimpleStory = childAge < 5;
+                
+                // 构建故事内容
+                selectedTheme.templates.forEach(template => {
+                    storyContent += template + '\n\n';
+                });
+                
+                // 如果有特殊要求，添加到故事结尾
+                if (specialRequest) {
+                    storyContent += `（根据您的要求，这个故事还包含了：${specialRequest}）\n\n`;
+                }
+                
+                // 添加适合年龄的结尾
+                if (isSimpleStory) {
+                    storyContent += `故事讲完啦！${childName}闭上眼睛，慢慢地进入了甜美的梦乡。晚安，${childName}！`;
+                } else {
+                    storyContent += `随着星星在夜空中闪烁，${childName}也慢慢闭上了眼睛，带着微笑进入了梦乡。明天，又将是一个充满惊喜的新的一天。晚安，亲爱的${childName}。`;
+                }
+                
+                return {
+                    title: selectedTheme.title,
+                    content: storyContent,
+                    metadata: {
+                        childName,
+                        childAge,
+                        theme,
+                        character,
+                        specialRequest,
+                        createdAt: new Date().toISOString()
+                    }
+                };
+            }
+            
+            // 朗读故事函数
+            function readAloud() {
+                const storyContent = document.getElementById('storyContent').textContent;
+                const speech = new SpeechSynthesisUtterance();
+                speech.text = storyContent;
+                speech.lang = 'zh-CN';
+                speech.rate = 0.9;
+                speech.pitch = 1.2;
+                
+                window.speechSynthesis.speak(speech);
+            }
+            
+            // 保存故事函数
+            function saveStory() {
+                const title = document.getElementById('storyTitle').textContent;
+                const content = document.getElementById('storyContent').textContent;
+                
+                const story = {
+                    title,
+                    content,
+                    savedAt: new Date().toLocaleString()
+                };
+                
+                savedStories.push(story);
+                localStorage.setItem('savedStories', JSON.stringify(savedStories));
+                
+                renderSavedStories();
+                alert('故事已保存！');
+            }
+            
+            // 渲染已保存的故事
+            function renderSavedStories() {
+                if (savedStories.length === 0) {
+                    noStoriesMessage.style.display = 'block';
+                    return;
+                }
+                
+                noStoriesMessage.style.display = 'none';
+                savedStoriesList.innerHTML = '';
+                
+                savedStories.forEach((story, index) => {
+                    const storyElement = document.createElement('div');
+                    storyElement.className = 'story-item';
+                    storyElement.innerHTML = `
+                        <h3>${story.title}</h3>
+                        <p>${story.content.substring(0, 100)}...</p>
+                        <small>保存于: ${story.savedAt}</small>
+                        <button class="btn" onclick="viewSavedStory(${index})" style="margin-top:10px; padding:5px 10px; font-size:0.9rem;">查看完整故事</button>
+                        <button class="btn" onclick="deleteSavedStory(${index})" style="margin-top:10px; padding:5px 10px; font-size:0.9rem; background:linear-gradient(135deg, #ff5e7d 0%, #ff9500 100%)">删除</button>
+                    `;
+                    savedStoriesList.appendChild(storyElement);
+                });
+            }
+            
+            // 查看已保存的故事（全局函数，以便在HTML中调用）
+            window.viewSavedStory = function(index) {
+                const story = savedStories[index];
+                document.getElementById('storyTitle').textContent = story.title;
+                document.getElementById('storyContent').textContent = story.content;
+                storyContainer.style.display = 'block';
+                
+                // 滚动到故事区域
+                storyContainer.scrollIntoView({ behavior: 'smooth' });
+            };
+            
+            // 删除已保存的故事（全局函数，以便在HTML中调用）
+            window.deleteSavedStory = function(index) {
+                if (confirm('确定要删除这个故事吗？')) {
+                    savedStories.splice(index, 1);
+                    localStorage.setItem('savedStories', JSON.stringify(savedStories));
+                    renderSavedStories();
+                }
+            };
+            
+            // 重置表单函数
+            function resetForm() {
+                document.getElementById('childName').value = '';
+                document.getElementById('childAge').value = '5';
+                document.getElementById('storyTheme').value = 'adventure';
+                document.getElementById('character').value = '';
+                document.getElementById('specialRequest').value = '';
+                storyContainer.style.display = 'none';
+                
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+</html>
